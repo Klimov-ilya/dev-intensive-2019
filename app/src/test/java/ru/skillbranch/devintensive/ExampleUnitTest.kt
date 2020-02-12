@@ -1,9 +1,9 @@
 package ru.skillbranch.devintensive
 
+import org.junit.Assert.assertTrue
 import org.junit.Test
-
-import org.junit.Assert.*
 import ru.skillbranch.devintensive.models.User
+import ru.skillbranch.devintensive.utils.Utils
 import java.util.Date
 
 /**
@@ -21,13 +21,11 @@ class ExampleUnitTest {
     }
 
     @Test
-    fun test_decomposition() {
-        val user = User.makeUser("John Wick")
-        fun getUserInfo() = user
-
-        val (id, first, lastName) = getUserInfo()
-
-        println("$id, $first, ${user.component3()}")
+    fun test_parseFullName() {
+        assertTrue("${Utils.parseFullName(null).first} ${Utils.parseFullName(null).second}" == "null null")
+        assertTrue("${Utils.parseFullName("").first} ${Utils.parseFullName("").second}" == "null null")
+        assertTrue("${Utils.parseFullName(" ").first} ${Utils.parseFullName(" ").second}" == "null null")
+        assertTrue("${Utils.parseFullName("John").first} ${Utils.parseFullName(null).second}" == "John null")
     }
 
 }

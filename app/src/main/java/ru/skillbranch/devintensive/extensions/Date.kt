@@ -8,7 +8,7 @@ fun Date.humanizeDiff(date: Date = Date()): String {
     return ""
 }
 
-fun Date.format(pattern: String = "HH:mm:ss dd:MM:yy") =
+fun Date.format(pattern: String = "HH:mm:ss dd.MM.yy"): String =
     SimpleDateFormat(pattern, Locale("ru")).format(this)
 
 fun Date.add(value: Int, unit: TimeUnits = TimeUnits.SECOND) : Date {
