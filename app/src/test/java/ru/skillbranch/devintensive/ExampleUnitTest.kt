@@ -28,4 +28,23 @@ class ExampleUnitTest {
         assertTrue("${Utils.parseFullName("John").first} ${Utils.parseFullName(null).second}" == "John null")
     }
 
+    @Test
+    fun test_initials() {
+        assertTrue(Utils.toInitials("Илья", "Климов") == "ИК")
+        assertTrue(Utils.toInitials("Илья", "") == "И")
+        assertTrue(Utils.toInitials("", "Климов") == "К")
+        assertTrue(Utils.toInitials(" ", "Климов") == "К")
+        assertTrue(Utils.toInitials(null, "Климов") == "К")
+        assertTrue(Utils.toInitials(" ", "") == null)
+        assertTrue(Utils.toInitials(null, null) == null)
+        assertTrue(Utils.toInitials(" ", " ") == null)
+        assertTrue(Utils.toInitials("", "") == null)
+    }
+
+    @Test
+    fun test_transliterations() {
+        assertTrue(Utils.transliteration("Женя Стереотипов") == "Zhenya Stereotipov")
+        assertTrue(Utils.transliteration("Amazing Петр","_") == "Amazing_Petr")
+    }
+
 }
