@@ -55,3 +55,41 @@ const val DAYS = 24 * HOURS
 enum class TimeUnits{
     SECOND, MINUTE, HOUR, DAY;
 }
+
+fun TimeUnits.plural(value: Int) : String {
+    when(this) {
+        TimeUnits.SECOND -> {
+            return when (value.toString().last()) {
+                '0' -> "$value секунд"
+                '1' -> "$value секунду"
+                in '2'..'4' -> "$value секунды"
+                else -> "$value секунд"
+            }
+        }
+        TimeUnits.MINUTE -> {
+            return when (value.toString().last()) {
+                '0' -> "$value минут"
+                '1' -> "$value минуту"
+                in '2'..'4' -> "$value минуты"
+                else -> "$value минут"
+            }
+        }
+        TimeUnits.HOUR -> {
+            return when (value.toString().last()) {
+                '0' -> "$value часов"
+                '1' -> "$value час"
+                in '2'..'4' -> "$value часа"
+                else -> "$value часов"
+            }
+        }
+        TimeUnits.DAY -> {
+            return when (value.toString().last()) {
+                '0' -> "$value дней"
+                '1' -> "$value день"
+                in '2'..'4' -> "$value дня"
+                else -> "$value дней"
+            }
+        }
+        else -> throw IllegalStateException()
+    }
+}

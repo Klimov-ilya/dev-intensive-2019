@@ -2,6 +2,8 @@ package ru.skillbranch.devintensive
 
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import ru.skillbranch.devintensive.extensions.TimeUnits
+import ru.skillbranch.devintensive.extensions.plural
 import ru.skillbranch.devintensive.extensions.stripHtml
 import ru.skillbranch.devintensive.extensions.truncate
 import ru.skillbranch.devintensive.models.User
@@ -60,6 +62,14 @@ class ExampleUnitTest {
     fun test_strip() {
         val a = "<p class=\"title\">Образовательное             IT-сообщество Skill Branch</p>"
         println(a.stripHtml())
+    }
+
+    @Test
+    fun test_plural() {
+        assertTrue(TimeUnits.SECOND.plural(1) == "1 секунду")
+        assertTrue(TimeUnits.MINUTE.plural(4) == "4 минуты")
+        assertTrue(TimeUnits.HOUR.plural(19) == "19 часов")
+        assertTrue(TimeUnits.DAY.plural(222) == "222 дня")
     }
 
 }
