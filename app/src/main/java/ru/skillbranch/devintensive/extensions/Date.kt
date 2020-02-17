@@ -59,34 +59,30 @@ enum class TimeUnits{
 fun TimeUnits.plural(value: Int) : String {
     when(this) {
         TimeUnits.SECOND -> {
-            return when (value.toString().last()) {
-                '0' -> "$value секунд"
-                '1' -> "$value секунду"
-                in '2'..'4' -> "$value секунды"
+            return when {
+                value == 1 -> "$value секунду"
+                value in 2..4 || (value > 20 && value.toString()[value.toString().length - 2] != '1' && (value.toString().last() == '2' || value.toString().last() == '3' || value.toString().last() == '4')) -> "$value секунды"
                 else -> "$value секунд"
             }
         }
         TimeUnits.MINUTE -> {
-            return when (value.toString().last()) {
-                '0' -> "$value минут"
-                '1' -> "$value минуту"
-                in '2'..'4' -> "$value минуты"
+            return when {
+                value == 1 -> "$value минуту"
+                value in 2..4 || (value > 20 && value.toString()[value.toString().length - 2] != '1' && (value.toString().last() == '2' || value.toString().last() == '3' || value.toString().last() == '4')) -> "$value минуты"
                 else -> "$value минут"
             }
         }
         TimeUnits.HOUR -> {
-            return when (value.toString().last()) {
-                '0' -> "$value часов"
-                '1' -> "$value час"
-                in '2'..'4' -> "$value часа"
+            return when {
+                value == 1 -> "$value час"
+                value in 2..4 || (value > 20 && value.toString()[value.toString().length - 2] != '1' && (value.toString().last() == '2' || value.toString().last() == '3' || value.toString().last() == '4')) -> "$value часа"
                 else -> "$value часов"
             }
         }
         TimeUnits.DAY -> {
-            return when (value.toString().last()) {
-                '0' -> "$value дней"
-                '1' -> "$value день"
-                in '2'..'4' -> "$value дня"
+            return when {
+                value == 1 -> "$value день"
+                value in 2..4 || (value > 20 && value.toString()[value.toString().length - 2] != '1' && (value.toString().last() == '2' || value.toString().last() == '3' || value.toString().last() == '4')) -> "$value дня"
                 else -> "$value дней"
             }
         }
