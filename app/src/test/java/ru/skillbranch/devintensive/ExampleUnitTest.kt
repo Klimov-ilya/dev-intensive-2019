@@ -2,6 +2,8 @@ package ru.skillbranch.devintensive
 
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import ru.skillbranch.devintensive.extensions.stripHtml
+import ru.skillbranch.devintensive.extensions.truncate
 import ru.skillbranch.devintensive.models.User
 import ru.skillbranch.devintensive.utils.Utils
 import java.util.Date
@@ -45,6 +47,19 @@ class ExampleUnitTest {
     fun test_transliterations() {
         assertTrue(Utils.transliteration("Женя Стереотипов") == "Zhenya Stereotipov")
         assertTrue(Utils.transliteration("Amazing Петр","_") == "Amazing_Petr")
+    }
+
+    @Test
+    fun test_truncate() {
+        println("Bender Bending Rodriguez — дословно «Сгибальщик Сгибающий Родригес»".truncate())
+        println("Bender Bending Rodriguez — дословно «Сгибальщик Сгибающий Родригес»".truncate(15))
+        println("A     ".truncate(3))
+    }
+
+    @Test
+    fun test_strip() {
+        val a = "<p class=\"title\">Образовательное             IT-сообщество Skill Branch</p>"
+        println(a.stripHtml())
     }
 
 }
