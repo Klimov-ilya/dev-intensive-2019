@@ -14,11 +14,7 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
     fun listenAnswer(answer: String) =
         if (question.answers.contains(answer)) {
             question = question.nextQuestion()
-            if (question == Question.IDLE) {
-                "Отлично - ты справился\nНа этом все, вопросов больше нет" to status.color
-            } else {
-                "Отлично - ты справился\n${question.question}" to status.color
-            }
+            "Отлично - ты справился\n${question.question}" to status.color
         } else {
             if (status != Status.CRITICAL) {
                 status = status.nextStatus()
@@ -34,14 +30,15 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
         NORMAL(Triple(255, 255, 255)),
         WARNING(Triple(255, 120, 0)),
         DANGER(Triple(255, 60, 60)),
-        CRITICAL(Triple(255, 255, 0));
+        CRITICAL(Triple(255, 0, 0));
 
-        fun nextStatus() = if (this.ordinal < values().lastIndex) {
-            values()[this.ordinal + 1]
-        } else {
-            values()[0]
+        fun nextStatus(): Status {
+            return if (this.ordinal < values().lastIndex) {
+                values()[this.ordinal + 1]
+            } else {
+                values()[0]
+            }
         }
-
     }
 
     enum class Question(val question: String, val answers: List<String>) {
@@ -60,7 +57,7 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
         SERIAL("Мой серийный номер?", listOf("2716057")) {
             override fun nextQuestion() = IDLE
         },
-        IDLE("На этом все, больше нет вопросов", listOf()) {
+        IDLE("На этом все, вопросов больше нет", listOf()) {
             override fun nextQuestion() = IDLE
         };
 
