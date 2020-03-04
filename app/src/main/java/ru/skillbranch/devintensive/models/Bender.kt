@@ -1,5 +1,7 @@
 package ru.skillbranch.devintensive.models
 
+import android.annotation.SuppressLint
+
 class Bender(var status: Status = Status.NORMAL, var question: Question = Question.NAME) {
 
     fun askQuestion() = when (question) {
@@ -11,19 +13,24 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
         Question.IDLE -> Question.IDLE.question
     }
 
+    @SuppressLint("DefaultLocale")
     fun listenAnswer(answer: String) =
         if (question.checkAnswer(answer)) {
-            if (question.answers.contains(answer)) {
-                question = question.nextQuestion()
-                "Отлично - ты справился\n${question.question}" to status.color
-            } else {
-                if (status != Status.CRITICAL) {
-                    status = status.nextStatus()
-                    "Это неправильный ответ\n${question.question}" to status.color
-                } else {
-                    status = Status.NORMAL
-                    question = Question.NAME
-                    "Это неправильный ответ. Давай все по новой\n${question.question}" to status.color
+            when {
+                question == Question.IDLE -> question.question.toLowerCase() to status.color
+                question.answers.contains(answer) -> {
+                    question = question.nextQuestion()
+                    "Отлично - ты справился\n${question.question.toLowerCase()}" to status.color
+                }
+                else -> {
+                    if (status != Status.CRITICAL) {
+                        status = status.nextStatus()
+                        "Это неправильный ответ\n${question.question.toLowerCase()}" to status.color
+                    } else {
+                        status = Status.NORMAL
+                        question = Question.NAME
+                        "Это неправильный ответ. Давай все по новой\n${question.question.toLowerCase()}" to status.color
+                    }
                 }
             }
         } else {
@@ -51,14 +58,14 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
 
             override fun nextQuestion() = PROFESSION
 
-            override fun checkAnswer(answer: String) = answer[0].isUpperCase()
+            override fun checkAnswer(answer: String) = answer[0].isUpperCase() && answer.isNotEmpty()
         },
         PROFESSION("Назови мою профессию?", listOf("сгибальщик", "bender")) {
             override val error = "Профессия должна начинаться со строчной буквы"
 
             override fun nextQuestion() = MATERIAL
 
-            override fun checkAnswer(answer: String) = answer[0].isLowerCase()
+            override fun checkAnswer(answer: String) = answer[0].isLowerCase() && answer.isNotEmpty()
         },
         MATERIAL("Из чего я сделан?", listOf("метал", "дерево", "metal", "iron", "wood")) {
             override val error = "Материал не должен содержать цифр"
