@@ -5,10 +5,12 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import ru.skillbranch.devintensive.extensions.hideKeyboard
 import ru.skillbranch.devintensive.models.Bender
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
@@ -22,12 +24,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        benderImage = findViewById(R.id.iv_bender)
-        textTxt = findViewById(R.id.tv_text)
-        messageEt = findViewById(R.id.et_message)
-        sendBtn = findViewById(R.id.iv_send)
-        sendBtn.setOnClickListener(this)
-
         benderObj = savedInstanceState?.let { bundle ->
             Bender(
                 Bender.Status.valueOf(bundle.getString("STATUS") ?: Bender.Status.NORMAL.name),
@@ -35,10 +31,26 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             )
         } ?: Bender()
 
+        benderImage = findViewById(R.id.iv_bender)
+        textTxt = findViewById(R.id.tv_text)
+        messageEt = findViewById(R.id.et_message)
+        sendBtn = findViewById(R.id.iv_send)
+        sendBtn.setOnClickListener(this)
+
         val (r, g, b) = benderObj.status.color
         benderImage.setColorFilter(Color.rgb(r, g, b), PorterDuff.Mode.MULTIPLY)
 
         textTxt.text = benderObj.askQuestion()
+
+        messageEt.setOnEditorActionListener { _, actionId, _ ->
+            if(actionId == EditorInfo.IME_ACTION_DONE){
+                hideKeyboard()
+                sendAnswer()
+                true
+            } else {
+                false
+            }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -49,12 +61,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     @SuppressLint("DefaultLocale")
     override fun onClick(view: View) {
-        if (view.id == R.id.iv_send) {
-            val (phrase, color) = benderObj.listenAnswer(messageEt.text.toString().toLowerCase())
-            messageEt.setText("")
-            val (r, g, b) = color
-            benderImage.setColorFilter(Color.rgb(r, g, b), PorterDuff.Mode.MULTIPLY)
-            textTxt.text = phrase
-        }
+        if (view.id == R.id.iv_send) sendAnswer()
     }
+
+    private fun sendAnswer() {
+        val (phrase, color) = benderObj.listenAnswer(messageEt.text.toString().toLowerCase())
+        messageEt.setText("")
+        val (r, g, b) = color
+        benderImage.setColorFilter(Color.rgb(r, g, b), PorterDuff.Mode.MULTIPLY)
+        textTxt.text = phrase
+    }
+
 }
