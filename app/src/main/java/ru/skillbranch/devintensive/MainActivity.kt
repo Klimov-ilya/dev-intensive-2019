@@ -65,6 +65,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun sendAnswer() {
+        if (messageEt.text.toString().isEmpty()) return
         val (phrase, color) = benderObj.listenAnswer(messageEt.text.toString())
         messageEt.setText("")
         val (r, g, b) = color

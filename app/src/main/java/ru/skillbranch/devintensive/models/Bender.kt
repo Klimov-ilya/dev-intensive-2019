@@ -72,21 +72,21 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
 
             override fun nextQuestion() = BDAY
 
-            override fun checkAnswer(answer: String) = !answer.matches("-?\\d+(\\.\\d+)?".toRegex())
+            override fun checkAnswer(answer: String) = Regex("\\d+").findAll(answer).none() && answer.isNotEmpty()
         },
         BDAY("Когда меня создали?", listOf("2993")) {
             override val error = "Год моего рождения должен содержать только цифры"
 
             override fun nextQuestion() = SERIAL
 
-            override fun checkAnswer(answer: String) = answer.matches("-?\\d+(\\.\\d+)?".toRegex())
+            override fun checkAnswer(answer: String) = answer.matches(DIGIT_PATTERN.toRegex()) && answer.isNotEmpty()
         },
         SERIAL("Мой серийный номер?", listOf("2716057")) {
             override val error: String = "Серийный номер содержит только цифры, и их 7"
 
             override fun nextQuestion() = IDLE
 
-            override fun checkAnswer(answer: String) = answer.length == 7 && answer.matches("-?\\d+(\\.\\d+)?".toRegex())
+            override fun checkAnswer(answer: String) = answer.length == 7 && answer.matches(DIGIT_PATTERN.toRegex()) && answer.isNotEmpty()
         },
         IDLE("На этом все, вопросов больше нет", listOf()) {
             override val error: String = ""
@@ -103,4 +103,9 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
         abstract fun checkAnswer(answer: String): Boolean
 
     }
+
+    companion object {
+        private const val DIGIT_PATTERN = "-?\\d+(\\.\\d+)?"
+    }
+
 }
