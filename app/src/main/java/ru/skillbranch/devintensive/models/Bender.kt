@@ -17,19 +17,19 @@ class Bender(var status: Status = Status.NORMAL, var question: Question = Questi
     fun listenAnswer(answer: String) =
         if (question.checkAnswer(answer)) {
             when {
-                question == Question.IDLE -> question.question.toLowerCase() to status.color
-                question.answers.contains(answer) -> {
+                question == Question.IDLE -> question.question to status.color
+                question.answers.contains(answer.toLowerCase()) -> {
                     question = question.nextQuestion()
-                    "Отлично - ты справился\n${question.question.toLowerCase()}" to status.color
+                    "Отлично - ты справился\n${question.question}" to status.color
                 }
                 else -> {
                     if (status != Status.CRITICAL) {
                         status = status.nextStatus()
-                        "Это неправильный ответ\n${question.question.toLowerCase()}" to status.color
+                        "Это неправильный ответ\n${question.question}" to status.color
                     } else {
                         status = Status.NORMAL
                         question = Question.NAME
-                        "Это неправильный ответ. Давай все по новой\n${question.question.toLowerCase()}" to status.color
+                        "Это неправильный ответ. Давай все по новой\n${question.question}" to status.color
                     }
                 }
             }
