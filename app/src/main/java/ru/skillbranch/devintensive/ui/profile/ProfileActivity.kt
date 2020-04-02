@@ -49,7 +49,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun updateTheme(appTheme: Int) {
-        //delegate.localNightMode = appTheme
+        delegate.setLocalNightMode(appTheme)
     }
 
     private fun updateUI(profile: Profile) {
