@@ -17,15 +17,28 @@ object Utils {
     fun transliteration(payload: String, divider: String = " "): String {
         var result = ""
         val array = payload.split(" ")
+
+        when {
+            array.size == 1 && array[0].isEmpty() -> return ""
+            array.size == 2 && array[0].isEmpty() && array[1].isEmpty() -> return ""
+        }
+        var needSeparator = true
         array.forEachIndexed { index, word ->
-            var curr = ""
-            word.forEach {
-                curr += when(it) {
-                    in 'а'..'я', in 'А'..'Я' -> getChar(it, it.isUpperCase())
-                    else -> it
+            if (word.isEmpty()) {
+                result += ""
+                needSeparator = false
+            } else {
+                var curr = if (index == 0) "" else if (needSeparator) divider else ""
+                word.forEach { symbol ->
+                    curr += when (symbol) {
+                        'ё', 'Ё' -> if (symbol.isUpperCase()) 'E' else 'e'
+                        in 'а'..'я', in 'А'..'Я' -> getChar(symbol, symbol.isUpperCase())
+                        else -> symbol
+                    }
                 }
+                needSeparator = curr.isNotEmpty()
+                result += curr
             }
-            result += "$curr${if (index != array.size - 1) divider else ""}"
         }
         return result
     }
@@ -38,7 +51,6 @@ object Utils {
             'г' -> "g"
             'д' -> "d"
             'е' -> "e"
-            'ё' -> "e"
             'ж' -> "zh"
             'з' -> "z"
             'и' -> "i"

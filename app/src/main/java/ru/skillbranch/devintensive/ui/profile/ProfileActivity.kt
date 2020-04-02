@@ -4,6 +4,8 @@ import android.graphics.ColorFilter
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.EditText
@@ -22,8 +24,10 @@ class ProfileActivity : AppCompatActivity() {
     }
     private lateinit var viewFields: Map<String, TextView>
     private var isEditMode = false
+    private var isValidProfile = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
         initViewModel()
@@ -75,6 +79,23 @@ class ProfileActivity : AppCompatActivity() {
             showCurrentMode(isEditMode)
         }
         btn_switch_theme.setOnClickListener { viewModel.switchTheme() }
+        et_repository.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                if (s.toString().isEmpty() || isValidUrl(s.toString())) {
+                    wr_repository.error = null
+                    isValidProfile = true
+                } else {
+                    isValidProfile = false
+                    wr_repository.error = "Невалидный адрес репозитория"
+                }
+            }
+        })
     }
 
     private fun showCurrentMode(isEdit: Boolean) {
@@ -112,14 +133,31 @@ class ProfileActivity : AppCompatActivity() {
             firstName = et_first_name.text.toString(),
             lastName = et_last_name.text.toString(),
             about = et_about.text.toString(),
-            repository = et_repository.text.toString()
+            repository = if (isValidProfile) et_repository.text.toString() else ""
         ).apply {
             viewModel.saveProfileData(this)
         }
+        if (!isValidProfile) {
+            et_repository.setText("")
+        }
+        isValidProfile = true
+    }
+
+    private fun isValidUrl(url: String): Boolean {
+        val regex = "^(https:\\/\\/)?(www\\.)?(github\\.com\\/)(?!(${getRegexExceptions()})(?=\\/|\$))[a-zA-Z\\d](?:[a-zA-Z\\d]|-(?=[a-zA-Z\\d])){0,38}(\\/)?\$".toRegex()
+        return regex.matches(url)
+    }
+
+    private fun getRegexExceptions(): String {
+        val exceptions = arrayOf(
+            "enterprise", "features", "topics", "collections", "trending", "events", "marketplace", "pricing",
+            "nonprofit", "customer-stories", "security", "login", "join"
+        )
+        return exceptions.joinToString("|")
     }
 
     companion object {
-        const val IS_EDIT_MODE = "IS_EDIT_MODE"
+        private const val IS_EDIT_MODE = "IS_EDIT_MODE"
     }
 
 }
