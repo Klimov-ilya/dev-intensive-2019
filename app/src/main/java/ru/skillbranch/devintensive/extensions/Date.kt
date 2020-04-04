@@ -8,27 +8,6 @@ fun Date.humanizeDiff(date: Date = Date()): String {
     return ""
 }
 
-/*
-* 0с - 1с "только что"
-
-1с - 45с "несколько секунд назад"
-
-45с - 75с "минуту назад"
-
-75с - 45мин "N минут назад"
-
-45мин - 75мин "час назад"
-
-75мин 22ч "N часов назад"
-
-22ч - 26ч "день назад"
-
-26ч - 360д "N дней назад"
-
->360д "более года назад"
-*
-* */
-
 fun Date.format(pattern: String = "HH:mm:ss dd.MM.yy"): String =
     SimpleDateFormat(pattern, Locale("ru")).format(this)
 
@@ -45,6 +24,18 @@ fun Date.add(value: Int, unit: TimeUnits = TimeUnits.SECOND) : Date {
     this.time = time
 
     return this
+}
+
+fun Date.shortFormat(): String {
+    val pattern = if (this.isSameDay(Date())) "HH:mm" else "dd:MM:yy"
+    val dateFormat = SimpleDateFormat(pattern, Locale("ru"))
+    return dateFormat.format(this)
+}
+
+fun Date.isSameDay(date: Date): Boolean {
+    val day1 = this.time / DAYS
+    val day2 = date.time / DAYS
+    return day1 == day2
 }
 
 const val SECONDS = 1000L
