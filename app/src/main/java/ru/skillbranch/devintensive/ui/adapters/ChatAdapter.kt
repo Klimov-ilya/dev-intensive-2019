@@ -17,7 +17,7 @@ import ru.skillbranch.devintensive.models.data.ChatType
 class ChatAdapter(
     private val listener: (ChatItem) -> Unit
 ) : RecyclerView.Adapter<ChatAdapter.ChatItemViewHolder>() {
-    var list: List<ChatItem> = listOf()
+    var items: List<ChatItem> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -29,31 +29,31 @@ class ChatAdapter(
     }
 
 
-    override fun getItemCount() = list.size
+    override fun getItemCount() = items.size
 
-    override fun getItemViewType(position: Int) = when(list[position].chatType) {
+    override fun getItemViewType(position: Int) = when(items[position].chatType) {
         ChatType.SINGLE -> SINGLE_TYPE
         ChatType.GROUP -> GROUP_TYPE
         ChatType.ARCHIVE -> ARCHIVE_TYPE
     }
 
     override fun onBindViewHolder(holder: ChatItemViewHolder, position: Int) =
-        holder.bind(list[position], listener)
+        holder.bind(items[position], listener)
 
     fun updateData(data: List<ChatItem>) {
         val diffCallback = object : DiffUtil.Callback() {
             override fun areItemsTheSame(oldPos: Int, newPos: Int): Boolean =
-                list[oldPos].id == data[newPos].id
+                items[oldPos].id == data[newPos].id
 
             override fun areContentsTheSame(oldPos: Int, newPos: Int): Boolean =
-                list[oldPos].hashCode() == data[newPos].hashCode()
+                items[oldPos].hashCode() == data[newPos].hashCode()
 
-            override fun getOldListSize() = list.size
+            override fun getOldListSize() = items.size
 
             override fun getNewListSize() = data.size
         }
         val diffResult = DiffUtil.calculateDiff(diffCallback)
-        list = data
+        items = data
         diffResult.dispatchUpdatesTo(this)
     }
 

@@ -2,7 +2,6 @@ package ru.skillbranch.devintensive.ui.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -35,11 +34,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun initViews() {
         chatAdapter = ChatAdapter {
-            Toast.makeText(this, it.title, Toast.LENGTH_SHORT).show()
+            Snackbar.make(rv_chat_list, "Click on ${it.title}", Snackbar.LENGTH_LONG).show()
         }
-        val touchCallback = ChatItemTouchHelperCallback(chatAdapter) {
-            viewModel.addToArchive(it.id)
-            Snackbar.make(rv_chat_list, "Вы точно хотите добавить ${it.title} в архив?", Snackbar.LENGTH_SHORT).show()
+        val touchCallback = ChatItemTouchHelperCallback(chatAdapter) { item ->
+            viewModel.addToArchive(item.id)
+            Snackbar.make(rv_chat_list, "Вы точно хотите добавить ${item.title} в архив?", Snackbar.LENGTH_SHORT).apply {
+                setAction("Восстановить") { viewModel.restoreFromArchive(item.id) }
+            }.show()
         }
         val itemTouchHelper = ItemTouchHelper(touchCallback)
         with(rv_chat_list) {

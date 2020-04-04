@@ -3,10 +3,12 @@ package ru.skillbranch.devintensive.models.data
 import androidx.annotation.VisibleForTesting
 import ru.skillbranch.devintensive.extensions.shortFormat
 import ru.skillbranch.devintensive.models.BaseMessage
+import ru.skillbranch.devintensive.models.ImageMessage
+import ru.skillbranch.devintensive.models.TextMessage
 import ru.skillbranch.devintensive.utils.Utils
 import java.util.Date
 
-data class  Chat(
+data class Chat(
     val id: String,
     val title: String,
     val members: List<User> = listOf(),
@@ -14,22 +16,22 @@ data class  Chat(
     var isArchived: Boolean = false
 ) {
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    fun unreadableMessageCount(): Int {
-        return 0
-    }
+    fun unreadableMessageCount() = if (messages.isEmpty()) 0 else messages.filter { !it.isReaded }.size
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    fun lastMessageDate(): Date? {
-        return Date()
-    }
-
-    /*@VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    fun lastMessageShort(): Pair<String, String?> = when(val lastMessage = messages.lastOrNull()){
-        //TODO implement me
-    }*/
+    fun lastMessageDate(): Date? = if (messages.isEmpty()) null else messages.last().date
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    fun lastMessageShort(): Pair<String, String?> = Pair("", null)
+    fun lastMessageShort(): Pair<String, String?> {
+        if (messages.isEmpty()) return "Сообщений нет" to null
+        val from = messages.last().from.firstName
+        val message = messages.last()
+        if (message is TextMessage) {
+            return message.text to from
+        } else {
+            return (message as ImageMessage).image to from
+        }
+    }
 
     private fun isSingle(): Boolean = members.size == 1
 
@@ -63,7 +65,7 @@ data class  Chat(
     }
 }
 
-enum class ChatType{
+enum class ChatType {
     SINGLE,
     GROUP,
     ARCHIVE

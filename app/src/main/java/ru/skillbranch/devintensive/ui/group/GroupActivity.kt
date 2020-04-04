@@ -68,7 +68,7 @@ class GroupActivity : AppCompatActivity() {
 
     private fun initViews() {
         usersAdapter = UserAdapter { viewModel.handleSelectedItem(it.id) }
-        with(rv_users_list) {
+        with(rv_user_list) {
             layoutManager = LinearLayoutManager(this@GroupActivity)
             addItemDecoration(DividerItemDecoration(this@GroupActivity, DividerItemDecoration.VERTICAL))
             adapter = usersAdapter

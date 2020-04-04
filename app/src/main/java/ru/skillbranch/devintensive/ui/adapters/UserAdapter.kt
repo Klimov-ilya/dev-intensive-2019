@@ -14,7 +14,7 @@ import ru.skillbranch.devintensive.models.data.UserItem
 class UserAdapter(
     private val listener: (UserItem) -> Unit
 ) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
-    private var items: List<UserItem> = listOf()
+    var items: List<UserItem> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         UserViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_user_list, parent, false))

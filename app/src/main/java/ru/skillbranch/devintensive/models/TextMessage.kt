@@ -11,5 +11,5 @@ class TextMessage(
     isIncoming: Boolean = false,
     date: Date = Date(),
     isReaded: Boolean = false,
-    var text: String?
+    var text: String
 ) : BaseMessage(id, from, chat, isIncoming, date, isReaded)
