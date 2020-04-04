@@ -1,6 +1,7 @@
 package ru.skillbranch.devintensive.ui.adapters
 
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,7 +9,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.item_chat_archive.view.*
 import kotlinx.android.synthetic.main.item_chat_group.view.*
+import kotlinx.android.synthetic.main.item_chat_group.view.tv_title_group
 import kotlinx.android.synthetic.main.item_chat_single.view.*
 import ru.skillbranch.devintensive.R
 import ru.skillbranch.devintensive.models.data.ChatItem
@@ -21,13 +24,13 @@ class ChatAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
+        Log.d("==> ", "$viewType")
         return when(viewType) {
             SINGLE_TYPE -> SingleViewHolder(inflater.inflate(R.layout.item_chat_single, parent, false))
             GROUP_TYPE -> GroupViewHolder(inflater.inflate(R.layout.item_chat_group, parent, false))
-            else -> ArchiveViewHolder(inflater.inflate(R.layout.item_chat_single, parent, false))
+            else -> ArchiveViewHolder(inflater.inflate(R.layout.item_chat_archive, parent, false))
         }
     }
-
 
     override fun getItemCount() = items.size
 
@@ -127,32 +130,28 @@ class ChatAdapter(
         }
     }
 
-    inner class ArchiveViewHolder(view: View) : ChatItemViewHolder(view), ItemTouchViewHolder {
+    inner class ArchiveViewHolder(view: View) : ChatItemViewHolder(view) {
 
         override fun bind(item: ChatItem, listener: (ChatItem) -> Unit) {
             with(itemView) {
-                tv_message_group.text = item.shortDescription
+                tv_message_archive.text = item.shortDescription
 
-                tv_date_group.text = item.lastMessageDate
-                tv_date_group.visibility = if (item.lastMessageDate != null) View.VISIBLE else View.GONE
+                tv_date_archive.text = item.lastMessageDate
+                tv_date_archive.visibility = if (item.lastMessageDate != null) View.VISIBLE else View.GONE
 
-                tv_counter_group.visibility = if (item.messageCount > 0) View.VISIBLE else View.GONE
-                tv_counter_group.text = item.messageCount.toString()
+                tv_counter_archive.visibility = if (item.messageCount > 0) View.VISIBLE else View.GONE
+                tv_counter_archive.text = item.messageCount.toString()
 
-                tv_message_author.visibility = if (item.messageCount > 0) View.VISIBLE else View.GONE
-                tv_message_author.text = item.author
+                tv_message_author_archive.visibility = if (item.messageCount > 0) View.VISIBLE else View.GONE
+                tv_message_author_archive.text = item.author
+
+                tv_message_archive.visibility = if (item.messageCount > 0) View.VISIBLE else View.GONE
+                tv_message_archive.text = item.shortDescription
 
                 setOnClickListener { listener(item) }
             }
         }
 
-        override fun onItemSelected() {
-            itemView.setBackgroundColor(Color.LTGRAY)
-        }
-
-        override fun onItemCleared() {
-            itemView.setBackgroundColor(Color.WHITE)
-        }
     }
 
     companion object {

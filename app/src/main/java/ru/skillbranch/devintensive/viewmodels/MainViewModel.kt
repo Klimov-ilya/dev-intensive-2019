@@ -9,7 +9,7 @@ import ru.skillbranch.devintensive.repositories.ChatRepository
 class MainViewModel : ViewModel() {
     private val chatRepository = ChatRepository
     private val chats = Transformations.map(chatRepository.loadChats()) { chat ->
-        return@map chat.filter { !it.isArchived }.map { it.toChatItem() }.sortedBy { it.id.toInt() }
+        return@map chat.map { it.toChatItem() }.sortedBy { it.id.toInt() }
     }
 
     fun getChatData(): LiveData<List<ChatItem>> = chats

@@ -4,6 +4,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import ru.skillbranch.devintensive.data.managers.CacheManager
 import ru.skillbranch.devintensive.extensions.mutableLiveData
+import ru.skillbranch.devintensive.models.BaseMessage
 import ru.skillbranch.devintensive.models.data.Chat
 
 object ChatRepository {
@@ -16,8 +17,24 @@ object ChatRepository {
         val filterF = {
             val query = query.value!!
             val chats = chats.value!!
-            result.value = if (query.isEmpty()) chats else chats.filter { chat ->
-                chat.toChatItem().title.contains(query, true)
+
+            val local = if (query.isEmpty()) chats.filter { !it.isArchived }.sortedBy { it.id } else chats.filter { chat ->
+                !chat.isArchived && chat.toChatItem().title.contains(query, true)
+            }.sortedBy { it.id }
+            if (chats.any { it.isArchived }) {
+                val messages = mutableListOf<BaseMessage>()
+                chats.filter { it.isArchived }.forEach { chat -> messages.addAll(chat.messages) }
+                val l = local.toMutableList()
+                val chat = Chat(
+                    "-1",
+                    "Архив сообщений",
+                    messages = messages,
+                    isArchived = true
+                )
+                l.add(0, chat)
+                result.value = l
+            } else {
+                result.value = local
             }
         }
 
@@ -34,7 +51,7 @@ object ChatRepository {
     // Обновление чата
     fun update(item: Chat) {
         val copy = chats.value!!.toMutableList()
-        val ind =  chats.value!!.indexOfFirst { it.id == item.id }
+        val ind = chats.value!!.indexOfFirst { it.id == item.id }
         if (ind == -1) return
         copy[ind] = item
         chats.value = copy
