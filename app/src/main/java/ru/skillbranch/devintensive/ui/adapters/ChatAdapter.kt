@@ -24,7 +24,7 @@ class ChatAdapter(
         return when(viewType) {
             SINGLE_TYPE -> SingleViewHolder(inflater.inflate(R.layout.item_chat_single, parent, false))
             GROUP_TYPE -> GroupViewHolder(inflater.inflate(R.layout.item_chat_group, parent, false))
-            else -> SingleViewHolder(inflater.inflate(R.layout.item_chat_single, parent, false))
+            else -> ArchiveViewHolder(inflater.inflate(R.layout.item_chat_single, parent, false))
         }
     }
 
@@ -103,6 +103,34 @@ class ChatAdapter(
             with(itemView) {
                 tv_title_group.text = item.title
 
+                tv_message_group.text = item.shortDescription
+
+                tv_date_group.text = item.lastMessageDate
+                tv_date_group.visibility = if (item.lastMessageDate != null) View.VISIBLE else View.GONE
+
+                tv_counter_group.visibility = if (item.messageCount > 0) View.VISIBLE else View.GONE
+                tv_counter_group.text = item.messageCount.toString()
+
+                tv_message_author.visibility = if (item.messageCount > 0) View.VISIBLE else View.GONE
+                tv_message_author.text = item.author
+
+                setOnClickListener { listener(item) }
+            }
+        }
+
+        override fun onItemSelected() {
+            itemView.setBackgroundColor(Color.LTGRAY)
+        }
+
+        override fun onItemCleared() {
+            itemView.setBackgroundColor(Color.WHITE)
+        }
+    }
+
+    inner class ArchiveViewHolder(view: View) : ChatItemViewHolder(view), ItemTouchViewHolder {
+
+        override fun bind(item: ChatItem, listener: (ChatItem) -> Unit) {
+            with(itemView) {
                 tv_message_group.text = item.shortDescription
 
                 tv_date_group.text = item.lastMessageDate

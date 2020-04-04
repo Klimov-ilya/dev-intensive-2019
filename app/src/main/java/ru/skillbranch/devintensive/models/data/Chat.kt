@@ -1,6 +1,5 @@
 package ru.skillbranch.devintensive.models.data
 
-import androidx.annotation.VisibleForTesting
 import ru.skillbranch.devintensive.extensions.shortFormat
 import ru.skillbranch.devintensive.models.BaseMessage
 import ru.skillbranch.devintensive.models.ImageMessage
@@ -15,13 +14,11 @@ data class Chat(
     var messages: MutableList<BaseMessage> = mutableListOf(),
     var isArchived: Boolean = false
 ) {
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+
     fun unreadableMessageCount() = if (messages.isEmpty()) 0 else messages.filter { !it.isReaded }.size
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     fun lastMessageDate(): Date? = if (messages.isEmpty()) null else messages.last().date
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     fun lastMessageShort(): Pair<String, String?> {
         if (messages.isEmpty()) return "Сообщений нет" to null
         val from = messages.last().from.firstName
