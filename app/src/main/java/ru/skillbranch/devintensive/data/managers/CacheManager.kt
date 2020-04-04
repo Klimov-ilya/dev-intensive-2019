@@ -1,4 +1,4 @@
-package ru.skillbranch.devintensive.data
+package ru.skillbranch.devintensive.data.managers
 
 import ru.skillbranch.devintensive.extensions.mutableLiveData
 import ru.skillbranch.devintensive.models.data.Chat
@@ -9,7 +9,8 @@ object CacheManager {
     private val chats = mutableLiveData(DataGenerator.stabChats)
     private val users = mutableLiveData(DataGenerator.stabUsers)
 
-    fun loadChats() = chats
+    fun loadChats() =
+        chats
 
     fun findUsersByIds(ids: List<String>): List<User> {
         return users.value!!.filter { ids.contains(it.id) }

@@ -15,7 +15,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.activity_profile.*
 import ru.skillbranch.devintensive.R
-import ru.skillbranch.devintensive.models.Profile
 import ru.skillbranch.devintensive.viewmodels.ProfileViewModel
 
 class ProfileActivity : AppCompatActivity() {
@@ -40,9 +39,6 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun initViewModel() {
-        viewModel.getProfileData().observe(this, Observer {
-            updateUI(it)
-        })
         viewModel.getTheme().observe(this, Observer {
             updateTheme(it)
         })
@@ -52,12 +48,8 @@ class ProfileActivity : AppCompatActivity() {
         delegate.setLocalNightMode(appTheme)
     }
 
-    private fun updateUI(profile: Profile) {
-        profile.toMap().also {
-            for ((k, v) in viewFields) {
-                v.text = it[k].toString()
-            }
-        }
+    private fun updateUI() {
+
     }
 
     private fun initViews(savedInstanceState: Bundle?) {
@@ -129,18 +121,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun saveProfileInfo() {
-        Profile(
-            firstName = et_first_name.text.toString(),
-            lastName = et_last_name.text.toString(),
-            about = et_about.text.toString(),
-            repository = if (isValidProfile) et_repository.text.toString() else ""
-        ).apply {
-            viewModel.saveProfileData(this)
-        }
-        if (!isValidProfile) {
-            et_repository.setText("")
-        }
-        isValidProfile = true
+
     }
 
     private fun isValidUrl(url: String): Boolean {

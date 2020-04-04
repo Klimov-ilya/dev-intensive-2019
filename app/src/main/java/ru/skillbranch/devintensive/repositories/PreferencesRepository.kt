@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatDelegate
 import ru.skillbranch.devintensive.App
-import ru.skillbranch.devintensive.models.Profile
 
 object PreferencesRepository {
     private const val FIRST_NAME = "FIRST_NAME"
@@ -22,26 +21,6 @@ object PreferencesRepository {
     fun saveAppTheme(value: Int)= putValue(APP_THEME to value)
 
     fun getAppTheme() = prefs.getInt(APP_THEME, AppCompatDelegate.MODE_NIGHT_NO)
-
-    fun getProfile() = Profile(
-        prefs.getString(FIRST_NAME,"")!!,
-        prefs.getString(LAST_NAME,"")!!,
-        prefs.getString(ABOUT,"")!!,
-        prefs.getString(REPOSITORY,"")!!,
-        prefs.getInt(RATING,0),
-        prefs.getInt(RESPECT,0)
-    )
-
-    fun saveProfile(profile: Profile) {
-        with(profile) {
-            putValue(FIRST_NAME to firstName)
-            putValue(LAST_NAME to lastName)
-            putValue(ABOUT to about)
-            putValue(REPOSITORY to repository)
-            putValue(RATING to rating)
-            putValue(RESPECT to respect)
-        }
-    }
 
     private fun putValue(pair: Pair<String, Any>) = with(prefs.edit()) {
         val key = pair.first
